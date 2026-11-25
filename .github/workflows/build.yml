@@ -1,0 +1,40 @@
+
+name: Build GOD Mod
+
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+
+    steps:
+      - name: Baixar projeto
+        uses: actions/checkout@v4
+
+      - name: Configurar Java 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: temurin
+
+      - name: Configurar Gradle
+        uses: gradle/actions/setup-gradle@v3
+        with:
+          gradle-version: '8.5'
+
+      - name: Extrair projeto
+        run: unzip -q GOD-fabric-1.20.1.zip
+
+      - name: Compilar GOD
+        run: |
+          cd GOD
+          gradle build --no-daemon
+
+      - name: Disponibilizar JAR
+        uses: actions/upload-artifact@v4
+        with:
+          name: GOD-Minecraft-1.20.1
+          path: GOD/build/libs/*.jar
+          
